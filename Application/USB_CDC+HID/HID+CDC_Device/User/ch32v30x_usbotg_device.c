@@ -1030,6 +1030,7 @@ void DevEP3_IN_Deal( UINT8 l )
 {
     USBOTG_FS->UEP3_TX_LEN = l;
     USBOTG_FS->UEP3_TX_CTRL = (USBOTG_FS->UEP3_TX_CTRL & ~USBHD_UEP_T_RES_MASK)| USBHD_UEP_T_RES_ACK;
+    USBOTG_FS->UEP3_TX_CTRL ^= USBHD_UEP_T_TOG;
 }
 
 /*********************************************************************

@@ -72,10 +72,14 @@ int main(void)
 	{
         if( Basic_Key_Handle( ) )
         {
-            while( USBHD_Endp3_Up_Flag );
-            memcpy( pEP3_IN_DataBuf, (UINT8*)Key_W_Val, 8 );
-            DevEP3_IN_Deal( 8 );
-            UpLoadFlag = 1;
+            if(UpLoadFlag ==0)
+            {
+                while( USBHD_Endp3_Up_Flag );
+                memcpy( pEP3_IN_DataBuf, (UINT8*)Key_W_Val, 8 );
+                DevEP3_IN_Deal( 8 );
+                printf( "0\n" );
+                UpLoadFlag = 1;
+            }
         }
         else
         {
@@ -84,6 +88,7 @@ int main(void)
                 while( USBHD_Endp3_Up_Flag );
                 memcpy( pEP3_IN_DataBuf, (UINT8*)Key_NotPress, 8 );
                 DevEP3_IN_Deal( 8 );
+                printf( "1\n" );
                 UpLoadFlag = 0;
             }
         }
@@ -140,12 +145,12 @@ void GPIO_Config( void )
 {
     GPIO_InitTypeDef GPIO_InitTypdefStruct={0};
 
-    RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOB, ENABLE );
-    GPIO_InitTypdefStruct.GPIO_Pin   = GPIO_Pin_15;
+    RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOA, ENABLE );
+    GPIO_InitTypdefStruct.GPIO_Pin   = GPIO_Pin_0;
     GPIO_InitTypdefStruct.GPIO_Mode  = GPIO_Mode_IPU;
     GPIO_InitTypdefStruct.GPIO_Speed = GPIO_Speed_50MHz;
 
-    GPIO_Init( GPIOB, &GPIO_InitTypdefStruct );
+    GPIO_Init( GPIOA, &GPIO_InitTypdefStruct );
 }
 
 /*********************************************************************
@@ -159,10 +164,10 @@ void GPIO_Config( void )
 UINT8 Basic_Key_Handle( void )
 {
     UINT8 keyval = 0;
-    if( ! GPIO_ReadInputDataBit( GPIOB, GPIO_Pin_15 ) )
+    if( GPIO_ReadInputDataBit( GPIOA, GPIO_Pin_0 ) == Bit_RESET )
     {
         Delay_Ms(20);
-        if( ! GPIO_ReadInputDataBit( GPIOB, GPIO_Pin_15 ) )
+        if(GPIO_ReadInputDataBit( GPIOA, GPIO_Pin_0 ) == Bit_RESET )
         {
             keyval = 1;
         }
